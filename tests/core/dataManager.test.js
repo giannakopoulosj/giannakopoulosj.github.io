@@ -36,4 +36,60 @@ describe('Data Manager', () => {
     const grouped = groupCoinsByCountry(coins);
     expect(grouped.Test[0].silverWeight_grams).toBe(8.35);
   });
+
+  // NEW TEST: Cover lines 17-22 (decimal purity)
+  it('handles purity as decimal (0-1)', () => {
+    const coins = [
+      { country: 'Test', name: 'Coin', grossWeight: 10, purity: 0.9 }
+    ];
+    
+    const grouped = groupCoinsByCountry(coins);
+    expect(grouped.Test[0].silverWeight_grams).toBe(9); // 10 * 0.9
+  });
+
+  // NEW TEST: Cover lines 17-22 (invalid purity fallback)
+  it('handles invalid purity by setting to zero', () => {
+    const coins = [
+      { country: 'Test', name: 'Invalid', grossWeight: 10, purity: -5 }
+    ];
+    
+    const grouped = groupCoinsByCountry(coins);
+    expect(grouped.Test[0].silverWeight_grams).toBe(0); // 10 * 0 (fallback)
+    expect(grouped.Test[0].silverWeight_tOz).toBe(0);
+  });
+
+  // NEW TEST: Cover the missing country check
+  it('skips coins without country', () => {
+    const coins = [
+      { country: '', name: 'No Country', grossWeight: 10, purity: 900 },
+      { country: null, name: 'Null Country', grossWeight: 10, purity: 900 },
+      { country: 'USA', name: 'Valid', grossWeight: 10, purity: 900 }
+    ];
+    
+    const grouped = groupCoinsByCountry(coins);
+    
+    // Only USA should be in the result
+    expect(Object.keys(grouped)).toEqual(['USA']);
+    expect(grouped.USA).toHaveLength(1);
+  });
+
+  // NEW TEST: Cover edge case with purity = 1000 (boundary)
+  it('handles purity at boundary value 1000', () => {
+    const coins = [
+      { country: 'Test', name: 'Pure', grossWeight: 10, purity: 1000 }
+    ];
+    
+    const grouped = groupCoinsByCountry(coins);
+    expect(grouped.Test[0].silverWeight_grams).toBe(10); // 10 * 1.0
+  });
+
+  // NEW TEST: Cover edge case with purity = 1 (boundary)
+  it('handles purity at boundary value 1', () => {
+    const coins = [
+      { country: 'Test', name: 'Min', grossWeight: 10, purity: 1 }
+    ];
+    
+    const grouped = groupCoinsByCountry(coins);
+    expect(grouped.Test[0].silverWeight_grams).toBe(0.01); // 10 * 0.001
+  });
 });
