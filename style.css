@@ -34,21 +34,22 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     margin: 0;
-    padding: 2rem 0;
+    padding: 0;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
     width: 90%;
     max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
+    margin: 2rem auto;
+    padding: 0;
     background: var(--surface-color);
     border-radius: 12px;
     border: 1px solid var(--border-color);
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
     transition: background-color 0.3s, border-color 0.3s;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .header {
@@ -56,13 +57,12 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 15px;
-    margin-bottom: 15px;
+    padding: 15px 2rem;
+    margin-bottom: 0;
+    background-color: var(--surface-color);
+    z-index: 100;
+    position: relative;
 }
-
-h1 { font-size: 1.75rem; margin: 0; }
-h2 { font-size: 1.25rem; }
-h1, h2 { color: var(--primary-color); }
 
 input[type="text"],
 input[type="number"] {
@@ -77,9 +77,50 @@ input[type="number"] {
 
 
 /* --- 3. COMPONENT STYLES --- */
-.totals, .silver-price, .search-container, .coin-list, .coin-format-explanation {
+
+/* Removed margin-bottom from .silver-price to prevent double margin with sticky-summary-wrapper */
+.totals, .search-container, .coin-list, .coin-format-explanation {
     margin-bottom: 25px;
 }
+.silver-price { /* Adjusted for alignment */
+    margin-bottom: 0; /* Managed by parent summary-flex-row gap */
+}
+
+
+/* NEW: Sticky Summary Wrapper */
+.sticky-summary-wrapper {
+    position: sticky;
+    top: 0;
+    background-color: var(--surface-color);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Flex row for totals and silver price */
+.summary-flex-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Adjusting existing totals and silver-price */
+.totals, .silver-price {
+    flex: 1;
+    min-width: 150px;
+    padding: 0;
+}
+.totals h2, .silver-price h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+.totals p {
+    margin-bottom: 0.25rem;
+}
+
 
 .totals.filtered-active {
     border-color: var(--filtered-text-color-light);
@@ -99,49 +140,31 @@ body.dark-mode .filtered-text {
     color: var(--filtered-text-color-dark);
 }
 
+/* --- FIX: Using Grid for .silver-price .price-input-group for perfect alignment --- */
 .silver-price .price-input-group {
-    margin-bottom: 10px; 
-    display: flex; 
-    align-items: center;
-    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    display: grid; /* Use CSS Grid */
+    grid-template-columns: auto 1fr; /* First column auto-width, second column takes remaining space */
+    gap: 5px 10px; /* Vertical and horizontal gap between grid items */
+    margin-bottom: 10px; /* Keep existing bottom margin */
+    align-items: center; /* Vertically align items in the row */
 }
 .silver-price label { 
-    margin-right: 10px; 
-    flex-basis: auto; /* Allow label to shrink */
-    white-space: nowrap; /* Prevent label text from breaking too early */
+    margin-right: 0; /* Grid handles spacing with gap, no need for margin-right */
+    white-space: nowrap; /* Prevent label text from breaking */
+    text-align: right; /* Align labels to the right for better visual connection to input */
 }
 .silver-price .price-input-group input {
-    flex-grow: 1; /* Allow input to take up available space */
-    max-width: 200px; /* Prevent inputs from becoming too wide on large screens */
-    min-width: 100px; /* Ensure a minimum width */
-    box-sizing: border-box; /* Include padding/border in width calculation */
-}
-
-@media (max-width: 480px) {
-    .silver-price .price-input-group {
-        flex-direction: column; /* Stack label and input vertically */
-        align-items: flex-start; /* Align stacked items to the left */
-    }
-    .silver-price label {
-        margin-right: 0;
-        margin-bottom: 5px; /* Add space below label */
-        min-width: unset; /* Remove min-width on very small screens */
-    }
-    .silver-price .price-input-group input {
-        width: 100%; /* Make input full width when stacked */
-        max-width: unset;
-    }
-    .container {
-        padding: 1rem; /* Reduce padding on container for small screens */
-    }
-    h1 { font-size: 1.5rem; }
-    h2 { font-size: 1.1rem; }
+    width: auto; /* Let grid manage width, not flex */
+    max-width: 150px; /* Constrain max width for inputs */
+    box-sizing: border-box;
+    justify-self: end; /* Align inputs to the end of their grid cell */
 }
 
 
 .clear-button {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; padding: 10px; margin-top: 15px; font-size: 1em; font-weight: bold;
+    width: 100%; padding: 10px; margin-top: 0;
+    font-size: 1em; font-weight: bold;
     color: var(--danger-text-color); background-color: transparent;
     border: 1px solid var(--danger-color); border-radius: 5px; cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
@@ -149,7 +172,9 @@ body.dark-mode .filtered-text {
 .clear-button:hover { background-color: var(--danger-color); color: #fff; }
 
 .search-container {
+    margin-top: 1.5rem;
     margin-bottom: 25px;
+    padding: 0 2rem;
     position: relative;
 }
 
@@ -160,7 +185,7 @@ body.dark-mode .filtered-text {
 
 .clear-search-button {
     position: absolute;
-    right: 10px; top: 50%; transform: translateY(-50%);
+    right: 30px; top: 50%; transform: translateY(-50%);
     background: none; border: none;
     color: var(--text-muted-color);
     font-size: 1.5em; cursor: pointer; padding: 0 5px; transition: color 0.2s;
@@ -169,6 +194,19 @@ body.dark-mode .filtered-text {
 }
 .clear-search-button:hover { color: var(--primary-color); }
 
+.coin-format-explanation {
+    font-size: 0.85em;
+    color: var(--text-muted-color);
+    text-align: center;
+    margin-top: -15px;
+    margin-bottom: 25px;
+    padding: 5px 2rem;
+}
+
+.coin-list {
+    margin-bottom: 25px;
+    padding: 0 2rem;
+}
 .country-group { border: 1px solid var(--border-color); border-radius: 5px; margin-bottom: 15px; }
 .country-title {
     font-size: 1.5em; font-weight: bold; padding: 15px; cursor: pointer;
@@ -230,7 +268,7 @@ input:checked + .slider:before { transform: translateX(24px); }
 /* --- 5. FOOTER STYLES --- */
 .app-footer {
     margin-top: 30px;
-    padding-top: 20px;
+    padding: 20px 2rem;
     border-top: 1px solid var(--border-color);
     text-align: center;
     font-size: 0.85em;
@@ -245,3 +283,48 @@ input:checked + .slider:before { transform: translateX(24px); }
     transition: color 0.2s;
 }
 .github-link:hover { color: var(--primary-color); }
+
+/* MEDIA QUERY FOR SMALLER SCREENS */
+@media (max-width: 768px) {
+    .summary-flex-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .totals, .silver-price {
+        min-width: unset;
+    }
+    .container {
+        margin: 1rem auto;
+    }
+    .sticky-summary-wrapper {
+        padding: 1rem;
+    }
+    .header {
+        padding: 10px 1rem;
+    }
+    .search-container, .coin-format-explanation, .coin-list, .app-footer {
+        padding: 0 1rem;
+    }
+    .clear-search-button {
+        right: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .silver-price .price-input-group {
+        /* Already defined in general .silver-price .price-input-group,
+           but ensure it's not accidentally overridden here */
+        grid-template-columns: 1fr; /* Stack on super small screens if needed */
+        gap: 5px; /* Adjust gap for stacked elements */
+    }
+    .silver-price label {
+        text-align: left; /* Align labels to the left when stacked */
+        margin-bottom: 5px;
+    }
+    .silver-price .price-input-group input {
+        max-width: unset; /* Remove max-width when stacked */
+        justify-self: stretch; /* Make input fill width */
+    }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.1rem; }
+}
