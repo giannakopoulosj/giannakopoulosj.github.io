@@ -18,7 +18,7 @@ body.dark-mode {
     --surface-color: #343a40;
     --text-color: #f8f9fa;
     --text-muted-color: #adb5bd;
-    --primary-color: #58a6ff;
+    --primary-color: #58a6ff; /* This is the primary color for dark mode */
     --border-color: #495057;
     --input-bg-color: #495057;
     --header-bg-color: #212529;
@@ -77,6 +77,60 @@ input[type="number"] {
 
 
 /* --- 3. COMPONENT STYLES --- */
+
+/* BREADCRUMB STYLES */
+.breadcrumb {
+    padding: 10px 2rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.breadcrumb ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.breadcrumb li {
+    font-size: 0.85em;
+    color: var(--text-muted-color);
+}
+
+.breadcrumb li + li::before {
+    content: "/";
+    margin: 0 8px;
+    color: var(--text-muted-color);
+}
+
+.breadcrumb a {
+    color: var(--primary-color); /* Breadcrumb links use primary color */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+    color: var(--primary-color);
+}
+
+/* MODIFIED: Styles for links within the main content area (like in library.html) */
+main a {
+    color: var(--primary-color); /* Now using primary color, same as breadcrumb */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+main a:hover {
+    text-decoration: underline;
+    color: var(--primary-color);
+}
+
 
 /* Removed margin-bottom from .silver-price to prevent double margin with sticky-summary-wrapper */
 .totals, .search-container, .coin-list, .coin-format-explanation {
@@ -296,7 +350,7 @@ input:checked + .slider:before { transform: translateX(24px); }
     .container {
         margin: 1rem auto;
     }
-    .sticky-summary-wrapper {
+    .sticky-summary-wrapper, .breadcrumb { /* Added .breadcrumb here */
         padding: 1rem;
     }
     .header {
@@ -312,8 +366,6 @@ input:checked + .slider:before { transform: translateX(24px); }
 
 @media (max-width: 480px) {
     .silver-price .price-input-group {
-        /* Already defined in general .silver-price .price-input-group,
-           but ensure it's not accidentally overridden here */
         grid-template-columns: 1fr; /* Stack on super small screens if needed */
         gap: 5px; /* Adjust gap for stacked elements */
     }
